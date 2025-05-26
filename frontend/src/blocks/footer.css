@@ -1,0 +1,31 @@
+.footer {
+  max-width: 318px;
+  display: flex;
+  justify-content: center;
+}
+.footer__copyright {
+  color: #545454;
+  font-size: 18px;
+  font-family: "Inter";
+  position: relative;
+  left: 460px;
+}
+
+@media screen and (max-width: 768px) {
+  .footer__copyright {
+    position: relative;
+    left: 185px;
+  }
+}
+@media screen and (max-width: 320px) {
+  .footer__copyright {
+    position: relative;
+    left: 5px;
+  }
+}
+@media screen and (max-width: 520px) {
+  .footer__copyright {
+    position: relative;
+    left: 5px;
+  }
+}

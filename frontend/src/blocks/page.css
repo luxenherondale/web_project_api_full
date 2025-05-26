@@ -1,0 +1,13 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #000000;
+}
+
+.page {
+  background-size: cover;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: "Inter";
+}

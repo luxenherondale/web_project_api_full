@@ -1,0 +1,99 @@
+.addcard {
+  background: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  left: 0;
+  right: 0px;
+  top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  width: 100%;
+  height: 100%;
+}
+.addcard.active {
+  visibility: visible;
+  display: flex;
+}
+
+.popup_card {
+  max-width: 430px;
+  height: 330px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 430px;
+  height: 330px;
+  margin: 45px auto 45px auto;
+  font-family: "Inter";
+  background-color: transparent;
+  flex-wrap: wrap;
+}
+.card__form-add {
+  max-width: 430px;
+  width: 100%;
+  height: 330px;
+  border: 1px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  box-sizing: content-box;
+  border-radius: 10px;
+  position: relative;
+}
+
+.form__close-button-card {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  right: -15px;
+  top: -45px;
+  background-image: url("../images/CloseIcon.png");
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+.form__close-button-card:hover {
+  background-image: url("../images/CloseIconhover.png");
+}
+.card__form-tittle {
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 24px;
+  padding-left: 30px;
+  padding-bottom: 20px;
+}
+
+.buttonsave {
+  background-color: #ffffff;
+  color: #c4c4c4;
+  max-width: 358px;
+  height: 55px;
+  border-radius: 2px;
+  margin-top: 20px;
+  border-color: #c4c4c4;
+  cursor: pointer;
+}
+.buttonsave:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+@media screen and (max-width: 320px) {
+  .popup_card {
+    max-width: 282px;
+    height: 322px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 282px;
+    margin: 45px auto 45px auto;
+  }
+  .form__close-button-card {
+    max-width: 26px;
+    height: 26px;
+    background-image: url("../images/CloseIcon.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+}

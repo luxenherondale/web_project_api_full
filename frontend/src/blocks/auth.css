@@ -1,0 +1,215 @@
+/* Esta es la estructura de CSS para los componentes de autenticación */
+
+.auth {
+  max-width: 430px;
+  width: 100%;
+  margin: 60px auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.auth__title {
+  margin: 0 0 50px;
+  font-size: 24px;
+  line-height: 29px;
+  font-weight: 900;
+  text-align: center;
+  color: #fff;
+}
+
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.auth__input {
+  width: 100%;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  font-size: 14px;
+  line-height: 17px;
+  color: #fff;
+  padding: 0 0 10px;
+}
+
+.auth__input::placeholder {
+  color: #ccc;
+}
+
+.auth__button {
+  height: 50px;
+  background-color: #fff;
+  border-radius: 2px;
+  border: none;
+  color: #000;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 186px;
+}
+
+.auth__button:hover {
+  opacity: 0.85;
+}
+
+.auth__text {
+  margin: 15px 0 0;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #fff;
+}
+
+.auth__link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.auth__link:hover {
+  text-decoration: underline;
+}
+
+/* Estilos para el encabezado autenticado */
+.header__auth-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.header__email {
+  margin: 0;
+  font-size: 18px;
+  line-height: 22px;
+  color: #fff;
+}
+
+.header__logout {
+  background: none;
+  border: none;
+  color: #a9a9a9;
+  font-size: 18px;
+  line-height: 22px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.header__logout:hover {
+  opacity: 0.6;
+}
+
+.header__auth-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.header__auth-link:hover {
+  opacity: 0.6;
+}
+
+/* Estilos para el InfoTooltip */
+.popup__container_type_tooltip {
+  width: 430px;
+  padding: 60px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.popup__tooltip-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  background: #fff;
+}
+
+.popup__tooltip-icon {
+  width: 120px;
+  height: 120px;
+  background-color: #fff;
+}
+
+.popup__tooltip-text {
+  margin: 0;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  color: #000;
+  background-color: #fff;
+}
+
+.popup__tooltip-close {
+  all: unset;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  left: 1190px;
+  top: 270px;
+  background-image: url("/src/images/CloseIcon.png");
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+
+@media screen and (max-width: 1200px) {
+  .popup__tooltip-close {
+    left: 800px;
+    top: 175px;
+  }
+}
+
+@media screen and (max-width: 770px) {
+  .auth {
+    max-width: 320px;
+    margin: 40px auto;
+  }
+
+  .auth__title {
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 40px;
+  }
+
+  .auth__button {
+    font-size: 16px;
+    line-height: 19px;
+    margin-top: 173px;
+  }
+
+  .popup__container_type_tooltip {
+    width: 280px;
+    padding: 50px 18px;
+  }
+
+  .popup__tooltip-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .popup__tooltip-text {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .popup__tooltip-close {
+    left: 400px;
+    top: 175px;
+    position: absolute;
+  }
+}
+
+@media screen and (max-width: 770px) {
+  .popup__tooltip-close {
+    left: 200px;
+    top: 165px;
+    position: absolute;
+  }
+}

@@ -1,0 +1,40 @@
+/* Estilos para el popup de confirmación de eliminación */
+.delete-confirmation {
+  background: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  left: 0;
+  right: 0px;
+  top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.delete-confirmation.active {
+  visibility: visible;
+  display: flex;
+}
+
+.card__form-delete {
+  max-width: 430px;
+  width: 100%;
+  height: 230px; /* Reducido para este popup específico */
+  border: 1px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  box-sizing: content-box;
+  border-radius: 10px;
+  position: relative;
+}
+
+@media screen and (max-width: 320px) {
+  .card__form-delete {
+    max-width: 282px;
+    height: 222px;
+  }
+}
