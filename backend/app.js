@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
+const { login, createUser } = require("./controllers/users");
+const auth = require("./middlewares/auth");
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -18,15 +20,14 @@ mongoose
 // Middleware para parsear JSON
 app.use(express.json());
 
-// Middleware de autorización temporal
-app.use((req, res, next) => {
-  req.user = {
-    _id: "68113b5d7e94ac2049a2473d", // ID GENERADO DE EJEMPLO
-  };
-  next();
-});
+// Rutas públicas (sin autenticación)
+app.post("/signin", login);
+app.post("/signup", createUser);
 
-// Uso de las rutas
+// Middleware de autenticación para rutas protegidas
+app.use(auth);
+
+// Rutas protegidas
 app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
