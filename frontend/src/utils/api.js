@@ -1,4 +1,4 @@
-// api.js - Para funcionalidad principal usando la API original
+// api.js - Para funcionalidad principal usando nuestra API
 
 class Api {
   constructor(options) {
@@ -10,7 +10,7 @@ class Api {
     const token = localStorage.getItem("token");
     return {
       ...this._headers,
-      // Authorization: `Bearer ${token}`, //
+      Authorization: `Bearer ${token}`,
     };
   }
 
@@ -74,11 +74,15 @@ class Api {
   }
 }
 
+// Determinar la URL base según el entorno
+const BASE_URL = process.env.NODE_ENV === 'production' 
+  ? "https://api.backaround.mooo.com" 
+  : "http://localhost:3000";
+
 const api = new Api({
-  baseUrl: "https://around-api.es.tripleten-services.com/v1",
+  baseUrl: BASE_URL,
   headers: {
     "Content-Type": "application/json",
-    authorization: "628cafd3-9a2c-42a3-9615-ad621da1e48b",
   },
 });
 

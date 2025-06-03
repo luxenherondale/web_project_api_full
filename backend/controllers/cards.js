@@ -1,17 +1,22 @@
 const Card = require("../models/card");
+const {
+  NotFoundError,
+  BadRequestError,
+  ForbiddenError
+} = require("../utils/errors");
 
 // Obtener todas las tarjetas
-const getCards = async (req, res) => {
+const getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({}).populate("owner");
     res.send(cards);
   } catch (err) {
-    res.status(500).send({ message: "Error al obtener las tarjetas" });
+    next(err);
   }
 };
 
 // Crear una nueva tarjeta
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
     const card = await Card.create({
@@ -22,38 +27,36 @@ const createCard = async (req, res) => {
     res.status(201).send(card);
   } catch (err) {
     if (err.name === "ValidationError") {
-      res.status(400).send({ message: "Datos de tarjeta inválidos" });
-    } else {
-      res.status(500).send({ message: "Error al crear la tarjeta" });
+      next(new BadRequestError("Datos de tarjeta inválidos"));
+      return;
     }
+    next(err);
   }
 };
 
 // Eliminar una tarjeta
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   try {
     const card = await Card.findById(req.params.cardId);
     if (!card) {
-      return res.status(404).send({ message: "Tarjeta no encontrada" });
+      throw new NotFoundError("Tarjeta no encontrada");
     }
     if (card.owner.toString() !== req.user._id) {
-      return res
-        .status(403)
-        .send({ message: "No autorizado para eliminar esta tarjeta" });
+      throw new ForbiddenError("No autorizado para eliminar esta tarjeta");
     }
     await card.deleteOne();
     res.send({ message: "Tarjeta eliminada" });
   } catch (err) {
     if (err.name === "CastError") {
-      res.status(400).send({ message: "ID de tarjeta inválido" });
-    } else {
-      res.status(500).send({ message: "Error al eliminar la tarjeta" });
+      next(new BadRequestError("ID de tarjeta inválido"));
+      return;
     }
+    next(err);
   }
 };
 
 // Dar like a una tarjeta
-const likeCard = async (req, res) => {
+const likeCard = async (req, res, next) => {
   try {
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
@@ -62,20 +65,20 @@ const likeCard = async (req, res) => {
     ).populate("owner");
 
     if (!card) {
-      return res.status(404).send({ message: "Tarjeta no encontrada" });
+      throw new NotFoundError("Tarjeta no encontrada");
     }
     res.send(card);
   } catch (err) {
     if (err.name === "CastError") {
-      res.status(400).send({ message: "ID de tarjeta inválido" });
-    } else {
-      res.status(500).send({ message: "Error al dar like a la tarjeta" });
+      next(new BadRequestError("ID de tarjeta inválido"));
+      return;
     }
+    next(err);
   }
 };
 
 // Quitar like de una tarjeta
-const dislikeCard = async (req, res) => {
+const dislikeCard = async (req, res, next) => {
   try {
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
@@ -84,15 +87,15 @@ const dislikeCard = async (req, res) => {
     ).populate("owner");
 
     if (!card) {
-      return res.status(404).send({ message: "Tarjeta no encontrada" });
+      throw new NotFoundError("Tarjeta no encontrada");
     }
     res.send(card);
   } catch (err) {
     if (err.name === "CastError") {
-      res.status(400).send({ message: "ID de tarjeta inválido" });
-    } else {
-      res.status(500).send({ message: "Error al quitar like de la tarjeta" });
+      next(new BadRequestError("ID de tarjeta inválido"));
+      return;
     }
+    next(err);
   }
 };
 

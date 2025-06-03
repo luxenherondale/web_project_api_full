@@ -1,110 +1,87 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const {
+  NotFoundError,
+  BadRequestError,
+  ConflictError,
+  UnauthorizedError
+} = require("../utils/errors");
+
+const JWT_SECRET = process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'clave-secreta';
 
 // Controlador para login
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      return res
-        .status(401)
-        .send({ message: "Correo electrónico o contraseña incorrectos" });
+      throw new UnauthorizedError("Correo electrónico o contraseña incorrectos");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res
-        .status(401)
-        .send({ message: "Correo electrónico o contraseña incorrectos" });
+      throw new UnauthorizedError("Correo electrónico o contraseña incorrectos");
     }
 
     const token = jwt.sign(
       { _id: user._id },
-      "clave-secreta", // En producción usar process.env.JWT_SECRET
+      JWT_SECRET,
       { expiresIn: "7d" }
     );
 
     res.send({ token });
   } catch (err) {
-    res
-      .status(500)
-      .send({ message: "Error en el servidor", error: err.message });
+    next(err);
   }
 };
 
 // Controlador para obtener usuario actual
-const getCurrentUser = async (req, res) => {
+const getCurrentUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id).orFail(() => {
-      const error = new Error("Usuario no encontrado");
-      error.statusCode = 404;
-      throw error;
-    });
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
     res.send(user);
   } catch (err) {
-    if (err.statusCode === 404) {
-      return res.status(404).send({ message: err.message });
-    }
-    return res.status(500).send({
-      message: "Error al obtener el usuario",
-      error: err.message,
-    });
+    next(err);
   }
 };
 
 // Controlador para obtener todos los usuarios
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find({}).orFail(() => {
-      const error = new Error("No se encontraron usuarios");
-      error.statusCode = 404;
-      throw error;
-    });
+    const users = await User.find({});
     res.send(users);
   } catch (err) {
-    if (err.statusCode === 404) {
-      return res.status(404).send({ message: err.message });
-    }
-    return res.status(500).send({
-      message: "Error al obtener los usuarios",
-      error: err.message,
-    });
+    next(err);
   }
 };
 
 // Controlador para obtener un usuario específico
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id).orFail(() => {
-      const error = new Error("Usuario no encontrado");
-      error.statusCode = 404;
-      throw error;
-    });
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
 
     res.send(user);
   } catch (err) {
     if (err.name === "CastError") {
-      return res.status(400).send({
-        message: "ID de usuario inválido",
-        error: err.message,
-      });
+      next(new BadRequestError("ID de usuario inválido"));
+      return;
     }
-    if (err.statusCode === 404) {
-      return res.status(404).send({ message: err.message });
-    }
-    return res.status(500).send({
-      message: "Error al obtener el usuario",
-      error: err.message,
-    });
+    next(err);
   }
 };
 
 // Controlador para crear un nuevo usuario (registro)
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     const { name, about, avatar, email, password } = req.body;
 
@@ -125,84 +102,62 @@ const createUser = async (req, res) => {
     res.status(201).send(userResponse);
   } catch (err) {
     if (err.name === "ValidationError") {
-      return res.status(400).send({
-        message: "Datos de usuario inválidos",
-        error: err.message,
-      });
+      next(new BadRequestError("Datos de usuario inválidos"));
+      return;
     }
     if (err.code === 11000) {
-      return res.status(409).send({
-        message: "El correo electrónico ya está registrado",
-      });
+      next(new ConflictError("El correo electrónico ya está registrado"));
+      return;
     }
-    return res.status(500).send({
-      message: "Error al crear el usuario",
-      error: err.message,
-    });
+    next(err);
   }
 };
 
 // Controlador para actualizar el perfil
-const updateProfile = async (req, res) => {
+const updateProfile = async (req, res, next) => {
   try {
     const { name, about } = req.body;
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { name, about },
       { new: true, runValidators: true }
-    ).orFail(() => {
-      const error = new Error("Usuario no encontrado");
-      error.statusCode = 404;
-      throw error;
-    });
+    );
+
+    if (!user) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
 
     res.send(user);
   } catch (err) {
     if (err.name === "ValidationError") {
-      return res.status(400).send({
-        message: "Datos de actualización inválidos",
-        error: err.message,
-      });
+      next(new BadRequestError("Datos de actualización inválidos"));
+      return;
     }
-    if (err.statusCode === 404) {
-      return res.status(404).send({ message: err.message });
-    }
-    return res.status(500).send({
-      message: "Error al actualizar el usuario",
-      error: err.message,
-    });
+    next(err);
   }
 };
 
 // Controlador para actualizar el avatar
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
     const user = await User.findByIdAndUpdate(
       req.user._id,
       { avatar },
       { new: true, runValidators: true }
-    ).orFail(() => {
-      const error = new Error("Usuario no encontrado");
-      error.statusCode = 404;
-      throw error;
-    });
+    );
+
+    if (!user) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
 
     res.send(user);
   } catch (err) {
     if (err.name === "ValidationError") {
-      return res.status(400).send({
-        message: "URL de avatar inválida",
-        error: err.message,
-      });
+      next(new BadRequestError("URL de avatar inválida"));
+      return;
     }
-    if (err.statusCode === 404) {
-      return res.status(404).send({ message: err.message });
-    }
-    return res.status(500).send({
-      message: "Error al actualizar el avatar",
-      error: err.message,
-    });
+    next(err);
   }
 };
 

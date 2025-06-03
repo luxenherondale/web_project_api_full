@@ -1,9 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
+const { errors } = require("celebrate");
 const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
 const { login, createUser } = require("./controllers/users");
-const auth = require("./middlewares/auth");
+const auth = require("./middleware/auth");
+const errorHandler = require("./middleware/errorHandler");
+const { requestLogger, errorLogger } = require("./utils/logger");
+const { NotFoundError } = require("./utils/errors");
+const { validateUserCreation, validateLogin } = require("./middleware/validation");
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -17,12 +23,26 @@ mongoose
   .then(() => console.log("Conectado a MongoDB"))
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
+// Middleware CORS
+app.use(cors());
+app.options('*', cors());
+
 // Middleware para parsear JSON
 app.use(express.json());
 
+// Logger de solicitudes
+app.use(requestLogger);
+
+// Ruta de prueba para crash del servidor
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('El servidor va a caer');
+  }, 0);
+});
+
 // Rutas públicas (sin autenticación)
-app.post("/signin", login);
-app.post("/signup", createUser);
+app.post("/signin", validateLogin, login);
+app.post("/signup", validateUserCreation, createUser);
 
 // Middleware de autenticación para rutas protegidas
 app.use(auth);
@@ -32,10 +52,21 @@ app.use("/users", usersRouter);
 app.use("/cards", cardsRouter);
 
 // Manejo de rutas no existentes
-app.use((req, res) => {
-  res.status(404).send({ message: "Recurso solicitado no encontrado" });
+app.use((req, res, next) => {
+  next(new NotFoundError("Recurso solicitado no encontrado"));
 });
+
+// Logger de errores
+app.use(errorLogger);
+
+// Manejador de errores de celebrate
+app.use(errors());
+
+// Manejador de errores centralizado
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
 });
+
+module.exports = app;
