@@ -1,5 +1,5 @@
 # Proyecto Around the U.S.
-
+SPRINT 18
 ## Descripción
 Este proyecto es una aplicación web completa que permite a los usuarios registrarse, iniciar sesión, editar su perfil, agregar y eliminar tarjetas, y dar/quitar "me gusta" a las tarjetas. El proyecto está compuesto por un frontend en React y un backend en Express.js.
 
@@ -88,9 +88,9 @@ pm2 startup
 - `DELETE /cards/:cardId/likes`: Quitar like de una tarjeta
 
 ## Acceso al servidor
-- **Dominio**: [TU_DOMINIO_AQUÍ]
-- **Frontend**: https://[TU_DOMINIO_AQUÍ]
-- **API**: https://api.[TU_DOMINIO_AQUÍ]
+- **Dominio**: https://www.arounadaly.mooo.com
+- **Frontend**: https://www.arounadaly.mooo.com
+- **API**: https://api.arounadaly.mooo.com
 
 ## Autor
 Adaly Arcia
