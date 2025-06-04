@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import logo from "../../images/header.png";
+import logo from "../../images/Header.png";
 import AuthContext from "../../contexts/AuthContext";
 
 function Header() {
