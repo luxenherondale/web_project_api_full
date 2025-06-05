@@ -1,10 +1,10 @@
-# Proyecto Around the U.S.
-SPRINT 18
+# Proyecto Around the U.S. 
+SPRINT 18 
 ## Descripción
 Este proyecto es una aplicación web completa que permite a los usuarios registrarse, iniciar sesión, editar su perfil, agregar y eliminar tarjetas, y dar/quitar "me gusta" a las tarjetas. El proyecto está compuesto por un frontend en React y un backend en Express.js.
 
 ## Tecnologías utilizadas
-- **Frontend**: React, React Router, CSS
+- **Frontend**: React, React Router, CSS, Js
 - **Backend**: Node.js, Express.js, MongoDB, Mongoose
 - **Autenticación**: JWT, bcryptjs
 - **Validación**: celebrate, Joi
