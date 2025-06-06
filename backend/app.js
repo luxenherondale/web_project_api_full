@@ -28,6 +28,22 @@ mongoose
   .then(() => console.log("Conectado a MongoDB"))
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
+// Rutas públicas (sin autenticación)
+app.post("/signin", validateLogin, login);
+app.post("/signup", validateUserCreation, createUser);
+
+// Rutas protegidas
+app.use("/users", usersRouter);
+app.use("/cards", cardsRouter);
+
+// Manejo de rutas no existentes
+app.use((req, res, next) => {
+  next(new NotFoundError("Recurso solicitado no encontrado"));
+});
+
+// Middleware de autenticación para rutas protegidas
+app.use(auth);
+
 // Middleware para parsear JSON
 app.use(express.json());
 
@@ -49,21 +65,7 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
-// Rutas públicas (sin autenticación)
-app.post("/signin", validateLogin, login);
-app.post("/signup", validateUserCreation, createUser);
 
-// Middleware de autenticación para rutas protegidas
-app.use(auth);
-
-// Rutas protegidas
-app.use("/users", usersRouter);
-app.use("/cards", cardsRouter);
-
-// Manejo de rutas no existentes
-app.use((req, res, next) => {
-  next(new NotFoundError("Recurso solicitado no encontrado"));
-});
 
 // Logger de errores
 app.use(errorLogger);
