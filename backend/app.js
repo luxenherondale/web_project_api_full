@@ -18,7 +18,7 @@ const app = express();
 const { PORT = 3000 } = process.env;
 
 // Conectar a MongoDB
-const { MONGODB_URI = 'mongodb://localhost:27017/aroundb' } = process.env;
+const { MONGODB_URI = "mongodb://localhost:27017/aroundb" } = process.env;
 
 mongoose
   .connect(MONGODB_URI, {
@@ -32,12 +32,18 @@ mongoose
 app.use(express.json());
 
 // Middleware CORS
-app.use(cors({
-  origin: ['https://www.arounadaly.mooo.com', 'http://localhost:3000'],
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "https://www.arounadaly.mooo.com",
+      "http://localhost:3000",
+      "https://arounadaly.mooo.com",
+    ],
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 // Logger de solicitudes
 app.use(requestLogger);
@@ -64,8 +70,6 @@ app.get("/crash-test", () => {
     throw new Error("El servidor va a caer");
   }, 0);
 });
-
-
 
 // Logger de errores
 app.use(errorLogger);
