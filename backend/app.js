@@ -9,34 +9,43 @@ const auth = require("./middleware/auth");
 const errorHandler = require("./middleware/errorHandler");
 const { requestLogger, errorLogger } = require("./utils/logger");
 const { NotFoundError } = require("./utils/errors");
-const { validateUserCreation, validateLogin } = require("./middleware/validation");
+const {
+  validateUserCreation,
+  validateLogin,
+} = require("./middleware/validation");
 
 const app = express();
 const { PORT = 3000 } = process.env;
 
 // Conectar a MongoDB
+const { MONGODB_URI = 'mongodb://localhost:27017/aroundb' } = process.env;
+
 mongoose
-  .connect("mongodb://localhost:27017/aroundb", {
+  .connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => console.log("Conectado a MongoDB"))
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
-// Middleware CORS
-app.use(cors());
-app.options('*', cors());
-
 // Middleware para parsear JSON
 app.use(express.json());
+
+// Middleware CORS
+app.use(cors({
+  origin: ['https://www.arounadaly.mooo.com', 'http://localhost:3000'],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 // Logger de solicitudes
 app.use(requestLogger);
 
 // Ruta de prueba para crash del servidor
-app.get('/crash-test', () => {
+app.get("/crash-test", () => {
   setTimeout(() => {
-    throw new Error('El servidor va a caer');
+    throw new Error("El servidor va a caer");
   }, 0);
 });
 

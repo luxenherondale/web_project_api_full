@@ -54,7 +54,9 @@ JWT_SECRET=tu_clave_secreta_aquí
 ```
 
 5. **Configurar Nginx**
-Crea un archivo de configuración en `/etc/nginx/sites-available/` y crea un enlace simbólico en `/etc/nginx/sites-enabled/`.
+Creación de un archivo de configuración en `/etc/nginx/sites-available/` y creación de un enlace simbólico en `/etc/nginx/sites-enabled/`.
+![alt text](image.png)
+
 
 6. **Configurar certificados SSL con Certbot**
 ```
