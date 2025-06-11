@@ -10,6 +10,11 @@ const checkResponse = (res) => {
   if (res.ok) {
     return res.json();
   }
+  // Para errores 401 en rutas de autenticación, manejamos de forma especial
+  if (res.status === 401 && (window.location.pathname === '/signin' || window.location.pathname === '/signup')) {
+    console.warn('Error de autenticación en ruta de autenticación, continuando sin bloquear la UI');
+    return Promise.reject({ status: res.status, message: 'Error de autenticación' });
+  }
   return Promise.reject(`Error: ${res.status}`);
 };
 
@@ -50,5 +55,14 @@ export const checkToken = (token) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-  }).then(checkResponse);
+  })
+  .then(checkResponse)
+  .catch(err => {
+    // Si estamos en una ruta de autenticación, no bloqueamos la UI con errores
+    if (window.location.pathname === '/signin' || window.location.pathname === '/signup') {
+      console.warn('Error al verificar token en ruta de autenticación, continuando sin bloquear la UI');
+      return Promise.reject(err);
+    }
+    return Promise.reject(err);
+  });
 };

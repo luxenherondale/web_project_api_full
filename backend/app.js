@@ -52,6 +52,24 @@ app.use(requestLogger);
 app.post("/signin", validateLogin, login);
 app.post("/signup", validateUserCreation, createUser);
 
+// Ruta para verificar si el servidor está funcionando (útil para diagnóstico)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", message: "El servidor está funcionando correctamente" });
+});
+
+// Ruta para obtener información sobre las rutas públicas disponibles
+app.get("/public-routes", (req, res) => {
+  res.status(200).json({
+    message: "Rutas públicas disponibles",
+    routes: [
+      { path: "/signin", method: "POST", description: "Iniciar sesión" },
+      { path: "/signup", method: "POST", description: "Registrar nuevo usuario" },
+      { path: "/health", method: "GET", description: "Verificar estado del servidor" },
+      { path: "/public-routes", method: "GET", description: "Obtener información sobre rutas públicas" }
+    ]
+  });
+});
+
 // Middleware de autenticación para rutas protegidas
 app.use(auth);
 

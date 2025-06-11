@@ -42,6 +42,11 @@ function App() {
   // Comprueba el token al cargar la aplicación
   useEffect(() => {
     const token = localStorage.getItem("token");
+    // Verificar si estamos en una ruta de autenticación
+    const path = window.location.pathname;
+    const isAuthRoute = path === "/signin" || path === "/signup";
+    
+    // Si hay un token y no estamos en una ruta de autenticación, verificarlo
     if (token) {
       auth
         .checkToken(token)
@@ -51,15 +56,28 @@ function App() {
             setLoggedIn(true);
             // Manejar diferentes estructuras de respuesta
             setUserEmail(res.data ? res.data.email : res.email);
-            navigate("/");
+            
+            // Solo redirigir si estamos en una ruta de autenticación
+            if (isAuthRoute) {
+              navigate("/");
+            }
           }
         })
         .catch((err) => {
           console.error("Error al verificar token:", err);
           localStorage.removeItem("token");
+          // Si hay error de autenticación y no estamos en una ruta de autenticación,
+          // redirigir a signin
+          if (!isAuthRoute) {
+            navigate("/signin");
+          }
         });
+    } else if (!isAuthRoute) {
+      // Si no hay token y no estamos en una ruta de autenticación, redirigir a signin
+      navigate("/signin");
     }
   }, [navigate]);
+
 
   // Funciones para manejar popups
   function handleOpenPopup(popupContent) {
