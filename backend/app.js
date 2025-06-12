@@ -4,6 +4,9 @@ const cors = require("cors");
 const { errors } = require("celebrate");
 const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
+const signinRouter = require("./routes/signin");
+const signupRouter = require("./routes/signup");
+const healthRouter = require("./routes/health");
 const { login, createUser } = require("./controllers/users");
 const auth = require("./middleware/auth");
 const errorHandler = require("./middleware/errorHandler");
@@ -48,34 +51,14 @@ app.use(
 // Logger de solicitudes
 app.use(requestLogger);
 
-// Rutas públicas (sin autenticación)
-app.post("/signin", validateLogin, login);
-app.post("/signup", validateUserCreation, createUser);
+// Rutas públicas que no requieren autenticación
+app.use('/signin', signinRouter);
+app.use('/signup', signupRouter);
+app.use('/health', healthRouter);
 
-// Ruta para verificar si el servidor está funcionando (útil para diagnóstico)
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok", message: "El servidor está funcionando correctamente" });
-});
-
-// Ruta para obtener información sobre las rutas públicas disponibles
-app.get("/public-routes", (req, res) => {
-  res.status(200).json({
-    message: "Rutas públicas disponibles",
-    routes: [
-      { path: "/signin", method: "POST", description: "Iniciar sesión" },
-      { path: "/signup", method: "POST", description: "Registrar nuevo usuario" },
-      { path: "/health", method: "GET", description: "Verificar estado del servidor" },
-      { path: "/public-routes", method: "GET", description: "Obtener información sobre rutas públicas" }
-    ]
-  });
-});
-
-// Middleware de autenticación para rutas protegidas
-app.use(auth);
-
-// Rutas protegidas
-app.use("/users", usersRouter);
-app.use("/cards", cardsRouter);
+// Rutas protegidas que usan middleware
+app.use('/users', auth, usersRouter);
+app.use('/cards', auth, cardsRouter);
 
 // Manejo de rutas no existentes
 app.use((req, res, next) => {
