@@ -18,7 +18,7 @@ const app = express();
 const { PORT = 3000 } = process.env;
 
 // Conectar a MongoDB
-const { MONGODB_URI = "mongodb://localhost:27017/aroundb" } = process.env;
+const { MONGODB_URI = "mongodb://127.0.0.1:27017/aroundb" } = process.env;
 
 mongoose
   .connect(MONGODB_URI, {
